@@ -27,7 +27,7 @@ buttons.forEach((button) => {
         } else if (value === "=") {
             // 如果是等号，执行计算
             calculate();
-        } else if (["+", "-", "*", "/"].includes(value)) {
+        } else if (["+", "-", "*", "/", "+/-", ".",].includes(value)) {
             // 如果是运算符按钮，设置当前运算符
             setOperator(value);
         } else {
