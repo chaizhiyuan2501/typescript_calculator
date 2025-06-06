@@ -1,3 +1,5 @@
+import { toggleSign, appendDecimal } from "./inputUtils";
+
 // 获取页面中 id 为 "display" 的输入框元素，并断言它是 HTMLInputElement 类型
 const display = document.getElementById("display") as HTMLInputElement;
 
@@ -27,10 +29,19 @@ buttons.forEach((button) => {
         } else if (value === "=") {
             // 如果是等号，执行计算
             calculate();
-        } else if (["+", "-", "*", "/", "+/-", ".",].includes(value)) {
+        } else if (["+", "-", "*", "/",].includes(value)) {
             // 如果是运算符按钮，设置当前运算符
             setOperator(value);
-        } else {
+        }
+        else if (value === "+/-") {
+            currentInput = toggleSign(currentInput);
+            updateDisplay();
+        }
+        else if (value === ".") {
+            currentInput = appendDecimal(currentInput);
+            updateDisplay();
+        }
+        else {
             // 否则视为数字输入，添加到当前输入中
             appendNumber(value);
         }
@@ -67,7 +78,7 @@ function calculate() {
             result = num1 + num2;
             break;
         case "-":
-            result = num1 - num2; // ⚠ 此处原文错误写成了 num1 * num2，应为减法
+            result = num1 - num2;
             break;
         case "*":
             result = num1 * num2;
