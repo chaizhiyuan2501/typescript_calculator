@@ -1,4 +1,4 @@
-import { toggleSign, appendDecimal } from "./inputUtils";
+import { toggleSign, appendDecimal } from "../utils/inputUtils";
 
 // 获取页面中 id 为 "display" 的输入框元素，并断言它是 HTMLInputElement 类型
 const display = document.getElementById("display") as HTMLInputElement;
