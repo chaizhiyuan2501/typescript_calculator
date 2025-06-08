@@ -4,6 +4,8 @@ import { createApp } from 'vue' // Vueアプリケーションを作成する関
 import { createPinia } from 'pinia' // 状態管理ライブラリPiniaをインポート
 import { router } from './router' // ルーターをインポート
 import App from './App.vue' // ルートコンポーネントをインポート
+import "@/assets/styles/base.css" // ベーススタイルをインポート
+import "@/assets/styles/variables.css" // ベーススタイルをインポート
 
 const app = createApp(App) // アプリケーションインスタンスを作成
 app.use(createPinia()) // Piniaをアプリケーションに登録

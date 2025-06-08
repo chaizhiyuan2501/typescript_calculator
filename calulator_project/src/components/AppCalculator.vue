@@ -11,7 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import { useCalculatorStore } from '@/store/calculator'
+import { useCalculatorStore } from '@/store/index'
+import { computed } from 'vue'
 
 const store = useCalculatorStore()
 
@@ -19,12 +20,12 @@ const display = computed(() => store.currentInput)
 
 const buttons = [
     { value: "%", label: "%" },
-    { value: "CE", label: "CE" },
+    { value: "CE", label: "CE", class: "clear" },
     { value: "C", label: "C", class: "clear" },
     { value: "Backspace", label: "←" },
-    { value: "1/x", label: "1/x" },
-    { value: "x²", label: "x²" },
-    { value: "√x", label: "√x" },
+    { value: "1/x", label: "1/x", class: "operator" },
+    { value: "x²", label: "x²", class: "operator" },
+    { value: "√x", label: "√x", class: "operator" },
     { value: "/", label: "÷", class: "operator" },
     { value: "7", label: "7" },
     { value: "8", label: "8" },
@@ -49,4 +50,4 @@ function handleClick(value: string) {
 }
 </script>
 
-<style scoped src="@/assets/styles.css"></style>
+<style scoped src="@/assets/styles/calculator.css"></style>
