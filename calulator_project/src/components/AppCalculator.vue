@@ -1,6 +1,9 @@
 ﻿<template>
     <div class="calculator">
-        <input type="text" :value="display" disabled id="display" />
+        <div class="calculator-display">
+            <div class="expression">{{ expression }}</div>
+            <div class="result">{{ currentInput || "0" }}</div>
+        </div>
         <div class="buttons">
             <button v-for="btn in buttons" :key="btn.label" :data-value="btn.value" :class="btn.class"
                 @click="handleClick(btn.value)">
@@ -11,21 +14,23 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { useCalculatorStore } from '@/store/index'
 import { computed } from 'vue'
 
 const store = useCalculatorStore()
 
+const { currentInput, expression } = storeToRefs(store)
 const display = computed(() => store.currentInput)
 
 const buttons = [
-    { value: "%", label: "%" },
+    { value: "%", label: "%", class: "unary-function" },
     { value: "CE", label: "CE", class: "clear" },
     { value: "C", label: "C", class: "clear" },
     { value: "Backspace", label: "←" },
-    { value: "1/x", label: "1/x", class: "operator" },
-    { value: "x²", label: "x²", class: "operator" },
-    { value: "√x", label: "√x", class: "operator" },
+    { value: "1/x", label: "1/x", class: "unary-function" },
+    { value: "x²", label: "x²", class: "unary-function" },
+    { value: "√x", label: "√x", class: "unary-function" },
     { value: "/", label: "÷", class: "operator" },
     { value: "7", label: "7" },
     { value: "8", label: "8" },

@@ -9,6 +9,7 @@ export const useCalculatorStore = defineStore('calculator', {
         previousInput: '',             // 直前に入力された値（演算用）
         operator: null as string | null, // 現在選択されている演算子（+,-,*,/ など）
         isResultDisplayed: false,      // 計算結果が表示されているかどうか
+        expression: '',          // 入力された数式の表現（計算履歴などに使用）
     }),
     // アクション（actions）の定義
     actions: {
@@ -18,6 +19,7 @@ export const useCalculatorStore = defineStore('calculator', {
             if (value === 'CE') return this.clearEntry()      // 入力クリア
             if (value === '=') return this.calculate()        // 計算実行
             if (['+', '-', '*', '/'].includes(value)) return this.setOperator(value) // 演算子セット
+            if (['1/x', '√x', 'x²', "%"].includes(value)) return this.handleFunction(value) // 特殊演算子セット
             if (value === '+/-') return this.toggleSign()     // 符号反転
             if (value === '.') return this.appendDecimal()    // 小数点追加
             this.appendNumber(value)                          // 数字入力
@@ -47,6 +49,7 @@ export const useCalculatorStore = defineStore('calculator', {
             if (this.operator) this.calculate()             // すでに演算子があれば計算を実行
             this.operator = op                              // 新しい演算子をセット
             this.previousInput = this.currentInput          // 現在の入力を前の入力へ
+            this.expression += `${this.currentInput} ${op} ` // 数式表現に追加
             this.currentInput = ''                          // 現在の入力をリセット
         },
         // 計算を実行
@@ -60,9 +63,9 @@ export const useCalculatorStore = defineStore('calculator', {
                 case '-': result = num1 - num2; break        // 引き算
                 case '*': result = num1 * num2; break        // 掛け算
                 case '/': result = num2 !== 0 ? num1 / num2 : NaN; break // 割り算（0除算はNaN）
-                case "1/x": result = num2 !== 0 ? 1 / num2 : NaN; break  // 逆数（0除算はNaN）
             }
             this.currentInput = result.toString()            // 結果を文字列で保存
+            this.expression = `${this.previousInput} ${this.operator} ${this.currentInput}` // 数式表現を更新
             this.operator = null                             // 演算子をリセット
             this.previousInput = ''                          // 前の入力をリセット
             this.isResultDisplayed = true                    // 結果表示フラグを立てる
@@ -74,6 +77,31 @@ export const useCalculatorStore = defineStore('calculator', {
                 this.isResultDisplayed = false
             }
             this.currentInput += num                         // 入力値を追加
+        },
+
+        // 特殊演算子（1/x, √, x²）を処理
+        handleFunction(func: string) {
+            if (!this.currentInput) return
+            let num = parseFloat(this.currentInput)
+            let result: number | string = num
+            switch (func) {
+                case '1/x':
+                    result = num !== 0 ? 1 / num : NaN
+                    break
+                case '√x':
+                    result = num >= 0 ? Math.sqrt(num) : NaN
+                    break
+                case 'x²':
+                    result = Math.pow(num, 2)
+                    break
+                case '%':
+                    result = num / 100
+                    break
+                default:
+                    return
+            }
+            this.currentInput = isNaN(result) ? "Error" : result.toString()
+            this.isResultDisplayed = true
         },
     },
 })
