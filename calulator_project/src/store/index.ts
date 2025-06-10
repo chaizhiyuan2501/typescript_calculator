@@ -15,6 +15,7 @@ export const useCalculatorStore = defineStore('calculator', {
     actions: {
         // ボタンが押されたときの処理をまとめて管理
         onButtonPress(value: string) {
+            if (value === 'backspace') return this.backspace()      // バックスペース
             if (value === 'C') return this.clearAll()         // 全クリア
             if (value === 'CE') return this.clearEntry()      // 入力クリア
             if (value === '=') return this.calculate()        // 計算実行
@@ -28,6 +29,7 @@ export const useCalculatorStore = defineStore('calculator', {
         clearAll() {
             this.currentInput = ''
             this.previousInput = ''
+            this.expression = ''
             this.operator = null
             this.isResultDisplayed = false
         },
@@ -43,33 +45,54 @@ export const useCalculatorStore = defineStore('calculator', {
         appendDecimal() {
             this.currentInput = appendDecimal(this.currentInput)
         },
+        backspace() {
+            this.currentInput = this.currentInput.slice(0, -1) // 最後の文字を削除
+        },
         // 演算子をセット
         setOperator(op: string) {
-            if (!this.currentInput) return                  // 入力がなければ何もしない
-            if (this.operator) this.calculate()             // すでに演算子があれば計算を実行
-            this.operator = op                              // 新しい演算子をセット
-            this.previousInput = this.currentInput          // 現在の入力を前の入力へ
-            this.expression += `${this.currentInput} ${op} ` // 数式表現に追加
-            this.currentInput = ''                          // 現在の入力をリセット
+            // 1. 如果 currentInput 是空，允许只更换运算符
+            if (!this.currentInput && this.previousInput && this.operator) {
+                this.operator = op
+                this.expression = `${this.previousInput} ${op}`
+                return
+            }
+
+            // 2. 如果已有 operator 且当前输入不为空，先计算
+            if (this.operator && this.previousInput && !this.isResultDisplayed) {
+                this.calculate()
+            }
+
+            // 3. 正常处理运算符输入
+            this.operator = op
+            this.previousInput = this.currentInput || this.previousInput
+            this.expression = `${this.previousInput} ${op}`
+            this.currentInput = ''
+            this.isResultDisplayed = false
         },
+
         // 計算を実行
         calculate() {
-            if (!this.previousInput || !this.currentInput || !this.operator) return // 必要な値がなければ何もしない
-            const num1 = parseFloat(this.previousInput)      // 前の入力を数値に変換
-            const num2 = parseFloat(this.currentInput)       // 現在の入力を数値に変換
-            let result = 0                                   // 計算結果
+            if (!this.previousInput || !this.currentInput || !this.operator) return
+
+            const num1 = parseFloat(this.previousInput)
+            const num2 = parseFloat(this.currentInput)
+            let result: number | string = 0
+
             switch (this.operator) {
-                case '+': result = num1 + num2; break        // 足し算
-                case '-': result = num1 - num2; break        // 引き算
-                case '*': result = num1 * num2; break        // 掛け算
-                case '/': result = num2 !== 0 ? num1 / num2 : NaN; break // 割り算（0除算はNaN）
+                case '+': result = num1 + num2; break
+                case '-': result = num1 - num2; break
+                case '*': result = num1 * num2; break
+                case '/': result = num2 !== 0 ? num1 / num2 : NaN; break
             }
-            this.currentInput = result.toString()            // 結果を文字列で保存
-            this.expression = `${this.previousInput} ${this.operator} ${this.currentInput}` // 数式表現を更新
-            this.operator = null                             // 演算子をリセット
-            this.previousInput = ''                          // 前の入力をリセット
-            this.isResultDisplayed = true                    // 結果表示フラグを立てる
+
+            const resultStr = isNaN(result) ? "Error" : result.toString()
+
+            this.previousInput = resultStr
+            this.currentInput = ''
+            this.expression = `${resultStr} ${this.operator}`
+            this.isResultDisplayed = true
         },
+
         // 数字を入力
         appendNumber(num: string) {
             if (this.isResultDisplayed) {                    // 結果表示中なら入力をリセット
@@ -82,25 +105,31 @@ export const useCalculatorStore = defineStore('calculator', {
         // 特殊演算子（1/x, √, x²）を処理
         handleFunction(func: string) {
             if (!this.currentInput) return
-            let num = parseFloat(this.currentInput)
+            const num = parseFloat(this.currentInput)
             let result: number | string = num
+            let expressionPrefix = ''
             switch (func) {
                 case '1/x':
                     result = num !== 0 ? 1 / num : NaN
+                    expressionPrefix = `1 / (${this.expression || this.currentInput}) `
                     break
                 case '√x':
                     result = num >= 0 ? Math.sqrt(num) : NaN
+                    expressionPrefix = `√(${this.expression || this.currentInput}) `
                     break
                 case 'x²':
                     result = Math.pow(num, 2)
+                    expressionPrefix = `sqr(${this.expression || this.currentInput}) `
                     break
                 case '%':
                     result = num / 100
+                    expressionPrefix = `${result}`
                     break
                 default:
                     return
             }
             this.currentInput = isNaN(result) ? "Error" : result.toString()
+            this.expression = expressionPrefix
             this.isResultDisplayed = true
         },
     },
