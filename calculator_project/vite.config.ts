@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/typescript_calculator/calculator_project/',
+  base: '/typescript_calculator/',
   plugins: [
     vue(),
     vueDevTools(),
