@@ -1,5 +1,5 @@
 {
-  "name": "calulator_project",
+  "name": "calculator_project",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -25,6 +25,7 @@
     "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "~10.0.0",
+    "gh-pages": "^6.3.0",
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
     "typescript": "~5.8.0",
