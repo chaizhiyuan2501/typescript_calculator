@@ -1,5 +1,5 @@
 ﻿.calculator {
-    width: 250px;
+    width: 400px;
     background: white;
     padding: 20px;
     border-radius: var(--border-radius);
@@ -25,6 +25,10 @@
     font-size: 32px;
     font-weight: bold;
     color: #000;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    word-break: keep-all;
 }
 
 .buttons {

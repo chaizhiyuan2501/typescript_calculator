@@ -15,11 +15,51 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { onMounted, onUnmounted } from 'vue'
 import { useCalculatorStore } from '@/store/index'
 
 const store = useCalculatorStore()
 
 const { currentInput, expression } = storeToRefs(store)
+
+const handleKeyDown = (event: KeyboardEvent) => {
+    const key = event.key
+
+    // 数字
+    if (!isNaN(Number(key))) {
+        store.appendNumber(key)
+        return
+    }
+
+    // 操作符
+    if (['+', '-', '*', '/', '%'].includes(key)) {
+        store.onButtonPress(key)
+        return
+    }
+
+    if (key === ".") {
+        store.appendNumber(".")
+        return
+    }
+
+    if (key === "Enter" || key === "=" || key === 'Escape') {
+        store.calculate()
+        return
+    }
+    if (key === 'Backspace') {
+        store.backspace()
+        return
+    }
+
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+})
 
 const buttons = [
     { value: "%", label: "%", class: "unary-function" },

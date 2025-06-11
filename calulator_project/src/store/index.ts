@@ -86,10 +86,11 @@ export const useCalculatorStore = defineStore('calculator', {
             }
 
             const resultStr = isNaN(result) ? "Error" : result.toString()
+            this.expression = `${this.previousInput} ${this.operator} ${this.currentInput} =`
 
             this.previousInput = resultStr
-            this.currentInput = ''
-            this.expression = `${resultStr} ${this.operator}`
+            this.currentInput = resultStr
+            this.operator = null
             this.isResultDisplayed = true
         },
 
