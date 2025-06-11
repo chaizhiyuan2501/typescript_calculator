@@ -18,34 +18,40 @@ import { storeToRefs } from 'pinia'
 import { onMounted, onUnmounted } from 'vue'
 import { useCalculatorStore } from '@/store/index'
 
+// ストアの取得
 const store = useCalculatorStore()
 
+// ストアからリアクティブな値を取得
 const { currentInput, expression } = storeToRefs(store)
 
+// キーボード入力を処理する関数
 const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key
 
-    // 数字
+    // 数字キーの場合
     if (!isNaN(Number(key))) {
         store.appendNumber(key)
         return
     }
 
-    // 操作符
+    // 演算子キーの場合
     if (['+', '-', '*', '/', '%'].includes(key)) {
         store.onButtonPress(key)
         return
     }
 
+    // 小数点の場合
     if (key === ".") {
         store.appendNumber(".")
         return
     }
 
+    // Enter, =, Escape の場合は計算を実行
     if (key === "Enter" || key === "=" || key === 'Escape') {
         store.calculate()
         return
     }
+    // バックスペースの場合は1文字削除
     if (key === 'Backspace') {
         store.backspace()
         return
@@ -53,14 +59,17 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
 }
 
+// コンポーネントマウント時にキーボードイベントを登録
 onMounted(() => {
     window.addEventListener('keydown', handleKeyDown)
 })
 
+// コンポーネントアンマウント時にイベントを解除
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyDown)
 })
 
+// ボタン定義リスト
 const buttons = [
     { value: "%", label: "%", class: "unary-function" },
     { value: "CE", label: "CE", class: "clear" },
@@ -88,6 +97,7 @@ const buttons = [
     { value: "=", label: "=", class: "equal" },
 ]
 
+// ボタンクリック時の処理
 function handleClick(value: string) {
     store.onButtonPress(value)
 }
