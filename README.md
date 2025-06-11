@@ -48,18 +48,17 @@ typescript_calculator/
 ```
 
 ## 開発用コマンド
-# 開発サーバー起動
+### 開発サーバー起動
 cd calculator_project
 npm install
 npm run dev
 
-# ビルド
+### ビルド
 npm run build
 
-# GitHub Pages にデプロイ
+### GitHub Pages にデプロイ
 npm run deploy
 
 作者
-名前：Chai Zhiyuan
 X： https://x.com/source006
 GitHub: @chaizhiyuan2501
