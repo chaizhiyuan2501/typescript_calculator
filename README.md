@@ -45,7 +45,7 @@ typescript_calculator/
 │   └── package.json
 ├── .gitignore
 └── README.md
-
+```
 
 ## 開発用コマンド
 # 開発サーバー起動
