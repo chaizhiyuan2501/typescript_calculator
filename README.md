@@ -66,5 +66,6 @@ npm run deploy
 ```
 
 作者
-X： https://x.com/source006
+X： [https://x.com/source006]
+
 GitHub: @chaizhiyuan2501
