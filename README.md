@@ -49,15 +49,21 @@ typescript_calculator/
 
 ## 開発用コマンド
 ### 開発サーバー起動
+```bash
 cd calculator_project
 npm install
 npm run dev
+```
 
 ### ビルド
+```bash
 npm run build
+```
 
 ### GitHub Pages にデプロイ
+```bash
 npm run deploy
+```
 
 作者
 X： https://x.com/source006
